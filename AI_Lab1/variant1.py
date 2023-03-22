@@ -1,6 +1,12 @@
 import queue
 import numpy as np
-from collections import deque
+
+
+# Load the maze from the file
+def load_maze():
+    with open('maze.txt', 'r') as f:
+        maze = [list(line.strip()) for line in f.readlines()]
+    return maze
 
 
 def solve_maze(search_algo):
@@ -11,12 +17,6 @@ def solve_maze(search_algo):
             for i, j in path:
                 maze_copy[i][j] = '*'
         print('\n'.join([''.join(row) for row in maze_copy]))
-
-    # Load the maze from the file
-    def load_maze():
-        with open('maze.txt', 'r') as f:
-            maze = [list(line.strip()) for line in f.readlines()]
-        return maze
 
     # Find the start and end position in the maze
     def find_start_end(maze):
@@ -111,6 +111,13 @@ def solve_maze(search_algo):
 
 
 if __name__ == '__main__':
+    # Load the maze from the file
+    maze = load_maze()
+
+    # Print the loaded maze
+    print("Maze:")
+    print('\n'.join([''.join(row) for row in maze]))
+
     # Prompt the user for the search algorithm to use
     search_algo = input(
         "Enter 'bfs' to use breadth-first search or 'dfs' to use depth-first search: ")
