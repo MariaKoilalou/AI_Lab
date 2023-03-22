@@ -4,7 +4,6 @@ from collections import deque
 
 
 def solve_maze(search_algo):
-
     # Visualize the maze and the path found by the algorithm
     def visualize(maze, path):
         maze_copy = np.array(maze)
