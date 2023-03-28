@@ -1,4 +1,3 @@
-import random
 import time
 
 # Constants for player and computer moves
