@@ -11,12 +11,19 @@ def load_maze():
 
 def solve_maze(search_algo):
     # Visualize the maze and the path found by the algorithm
-    def visualize(maze, path):
+    import time
+
+    # Visualize the maze and the path found by the algorithm
+    def visualize(maze, path, visited=None):
         maze_copy = np.array(maze)
         if path is not None:
             for i, j in path:
                 maze_copy[i][j] = '*'
+        if visited is not None:
+            for i, j in visited:
+                maze_copy[i][j] = '?'
         print('\n'.join([''.join(row) for row in maze_copy]))
+        # time.sleep(1)  # Add a 1-second delay to see the maze changes
 
     # Find the start and end position in the maze
     def find_start_end(maze):
@@ -52,20 +59,28 @@ def solve_maze(search_algo):
         q.put(start_pos)
         visited = set()
         parent = {}
+        step = 0
         while not q.empty():
+            step += 1
+            print(f"Step {step}:")
             pos = q.get()
+            visited.add(pos)
+            visualize(maze, None, visited)  # Visualize the maze with visited nodes
+            print(f"  Visited: {pos}")
             if pos == end_pos:
                 # Found the end position, reconstruct the path
                 path = [end_pos]
                 while path[-1] != start_pos:
                     path.append(parent[path[-1]])
                 path.reverse()
+                visualize(maze, path)  # Visualize the maze with the path found
                 return path
-            visited.add(pos)
             for neighbor in get_neighbors(maze, pos):
                 if neighbor not in visited:
                     q.put(neighbor)
                     parent[neighbor] = pos
+                    print(f"  Added to queue: {neighbor}")
+            visualize(maze, None, visited)  # Visualize the maze with visited nodes
         # End position is unreachable
         return None
 
@@ -76,12 +91,15 @@ def solve_maze(search_algo):
         parent = {}
         while stack:
             pos = stack.pop()
+            visited.add(pos)
+            visualize(maze, None, visited)  # Visualize the maze with visited nodes
             if pos == end_pos:
                 # Found the end position, reconstruct the path
                 path = [end_pos]
                 while path[-1] != start_pos:
                     path.append(parent[path[-1]])
                 path.reverse()
+                visualize(maze, path)  # Visualize the maze with the path found
                 return path
             visited.add(pos)
             for neighbor in get_neighbors(maze, pos):
@@ -89,6 +107,7 @@ def solve_maze(search_algo):
                     stack.append(neighbor)
                     parent[neighbor] = pos
         # End position is unreachable
+        visualize(maze, None, visited)  # Visualize the maze with visited nodes
         return None
 
     # Load the maze from the file
