@@ -138,7 +138,7 @@ def get_best_move(board, depth, alpha, beta, player):
 
 def play_game():
     # Initialize the board
-    board = [[' ' for col in range(3)] for row in range(3)]
+    board = [[' ' for _ in range(3)] for _ in range(3)]
     if PLAYER == 'O':
         # Computer plays first
         print('Computer is thinking...')
@@ -154,6 +154,7 @@ def play_game():
         col = int(input('Enter column (1-3): ')) - 1
         if is_valid_move(board, row, col):
             make_move(board, row, col, PLAYER)
+            draw_board(board)
         else:
             print('Invalid move!')
             continue
