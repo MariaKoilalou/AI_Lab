@@ -1,6 +1,8 @@
 import random
+import time
 
 # Constants for player and computer moves
+EMPTY = ' '
 PLAYER = 'X'
 COMPUTER = 'O'
 
@@ -18,7 +20,7 @@ def draw_board(board):
 
 # Function to check if a move is valid
 def is_valid_move(board, row, col):
-    return board[row][col] == ' '
+    return board[row][col] == EMPTY
 
 
 # Function to make a move on the board
@@ -30,21 +32,21 @@ def make_move(board, row, col, player):
 def is_game_over(board):
     # Check rows
     for row in range(3):
-        if board[row][0] == board[row][1] == board[row][2] != ' ':
+        if board[row][0] == board[row][1] == board[row][2] != EMPTY:
             return True
     # Check columns
     for col in range(3):
-        if board[0][col] == board[1][col] == board[2][col] != ' ':
+        if board[0][col] == board[1][col] == board[2][col] != EMPTY:
             return True
     # Check diagonals
-    if board[0][0] == board[1][1] == board[2][2] != ' ':
+    if board[0][0] == board[1][1] == board[2][2] != EMPTY:
         return True
-    if board[0][2] == board[1][1] == board[2][0] != ' ':
+    if board[0][2] == board[1][1] == board[2][0] != EMPTY:
         return True
     # Check for a tie
     for row in range(3):
         for col in range(3):
-            if board[row][col] == ' ':
+            if board[row][col] == EMPTY:
                 return False
     return True
 
@@ -143,6 +145,7 @@ def play_game():
 
         # Computer's turn
         print('Computer is thinking...')
+        time.sleep(1)
         move, _ = get_best_move(board, 4, -float('inf'), float('inf'), COMPUTER)
         make_move(board, move[0], move[1], COMPUTER)
 
