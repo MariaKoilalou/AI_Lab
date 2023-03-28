@@ -23,7 +23,7 @@ def solve_maze(search_algo):
             for i, j in visited:
                 maze_copy[i][j] = '?'
         print('\n'.join([''.join(row) for row in maze_copy]))
-        # time.sleep(1)  # Add a 1-second delay to see the maze changes
+        time.sleep(0.05)  # Add a 1-second delay to see the maze changes
 
     # Find the start and end position in the maze
     def find_start_end(maze):
@@ -89,10 +89,14 @@ def solve_maze(search_algo):
         stack = [start_pos]
         visited = set()
         parent = {}
+        step = 0
         while stack:
+            step += 1
+            print(f"Step {step}:")
             pos = stack.pop()
             visited.add(pos)
             visualize(maze, None, visited)  # Visualize the maze with visited nodes
+            print(f"  Visited: {pos}")
             if pos == end_pos:
                 # Found the end position, reconstruct the path
                 path = [end_pos]
@@ -106,6 +110,7 @@ def solve_maze(search_algo):
                 if neighbor not in visited:
                     stack.append(neighbor)
                     parent[neighbor] = pos
+                    print(f"  Added to queue: {neighbor}")
         # End position is unreachable
         visualize(maze, None, visited)  # Visualize the maze with visited nodes
         return None
@@ -126,6 +131,7 @@ def solve_maze(search_algo):
         return
 
     # Visualize the maze and the path found by the algorithm
+    print(" Final Solution:")
     visualize(maze, path)
 
 
