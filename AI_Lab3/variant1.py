@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 
 # Define the Rosenbrock function
@@ -36,32 +37,53 @@ def evolve(fitness, x_init, y_init, sigma, mut_prob, n_generations):
     return best_fitness, best_x, best_y
 
 
-# Define the range of values from which the population is initialized
+# suggest a range of values for the user input
 x_range = (-5, 5)
 y_range = (-5, 5)
+mutation_strength_range = (0.01, 0.5)
+mutation_probability_range = (0.01, 0.5)
+num_generations_range = (100, 1000)
 
-# Define the mutation strength and mutation probability
-sigma = 0.1
-mut_prob = 0.5
+# print the suggested ranges to the user
+print("Suggested parameter ranges:")
+print(f"x range: {x_range}")
+print(f"y range: {y_range}")
+print(f"mutation strength range: {mutation_strength_range}")
+print(f"mutation probability range: {mutation_probability_range}")
+print(f"number of generations range: {num_generations_range}")
 
-# Define the number of generations
-n_generations = 100
+# Get user input for the parameters
+x_min = float(input("Enter the minimum value of x: "))
+x_max = float(input("Enter the maximum value of x: "))
+y_min = float(input("Enter the minimum value of y: "))
+y_max = float(input("Enter the maximum value of y: "))
+sigma = float(input("Enter the mutation strength (sigma): "))
+mut_prob = float(input("Enter the mutation probability: "))
+n_generations = int(input("Enter the number of generations: "))
 
 # Initialize the population
-x_init = np.random.uniform(*x_range)
-y_init = np.random.uniform(*y_range)
+x_init = np.random.uniform(x_min, x_max)
+y_init = np.random.uniform(y_min, y_max)
+
+# Measure the optimization time
+start_time = time.time()
 
 # Run the algorithm
 best_fitness, best_x, best_y = evolve(rosenbrock, x_init, y_init, sigma, mut_prob, n_generations)
+
+# Calculate the optimization time
+end_time = time.time()
+opt_time = end_time - start_time
 
 # Print the results
 print(f"Best fitness: {best_fitness}")
 print(f"Best x: {best_x}")
 print(f"Best y: {best_y}")
+print(f"Optimization time: {opt_time:.6f} seconds")
 
 # Plot the optimization process
-x = np.linspace(*x_range, 100)
-y = np.linspace(*y_range, 100)
+x = np.linspace(x_min, x_max, 100)
+y = np.linspace(y_min, y_max, 100)
 X, Y = np.meshgrid(x, y)
 Z = rosenbrock(X, Y)
 plt.contour(X, Y, Z, levels=50, cmap='cool')
