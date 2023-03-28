@@ -1,9 +1,20 @@
 import time
 
+
+def choose_player():
+    player = input("Do you want to be X or O? ").upper()
+    while player not in ['X', 'O']:
+        print("Invalid input. Please choose X or O.")
+        player = input("Do you want to be X or O? ").upper()
+    if player == 'X':
+        return 'X', 'O'
+    else:
+        return 'O', 'X'
+
+
 # Constants for player and computer moves
 EMPTY = ' '
-PLAYER = 'X'
-COMPUTER = 'O'
+PLAYER, COMPUTER = choose_player()
 
 
 # Function to draw the board
@@ -128,10 +139,17 @@ def get_best_move(board, depth, alpha, beta, player):
 def play_game():
     # Initialize the board
     board = [[' ' for col in range(3)] for row in range(3)]
+    if PLAYER == 'O':
+        # Computer plays first
+        print('Computer is thinking...')
+        time.sleep(1)
+        move, _ = get_best_move(board, 4, -float('inf'), float('inf'), COMPUTER)
+        make_move(board, move[0], move[1], COMPUTER)
+
     # Loop until the game is over
     while not is_game_over(board):
-        # Player's turn
         draw_board(board)
+        # Player's turn
         row = int(input('Enter row (1-3): ')) - 1
         col = int(input('Enter column (1-3): ')) - 1
         if is_valid_move(board, row, col):
