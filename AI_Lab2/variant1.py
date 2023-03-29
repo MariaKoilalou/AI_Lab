@@ -151,8 +151,13 @@ def play_game():
     while not is_game_over(board):
         draw_board(board)
         # Player's turn
-        row = int(input('Enter row (1-3): ')) - 1
-        col = int(input('Enter column (1-3): ')) - 1
+        try:
+            row = int(input('Enter row (1-3): ')) - 1
+            col = int(input('Enter column (1-3): ')) - 1
+            make_move(board, row, col, PLAYER)
+        except:
+            print('Invalid move!')
+            continue
         if is_valid_move(board, row, col):
             make_move(board, row, col, PLAYER)
             draw_board(board)
