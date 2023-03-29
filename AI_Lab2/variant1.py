@@ -1,6 +1,7 @@
 import time
 
 
+# Choose whether you play with 'X' or 'Ο'
 def choose_player():
     player = input("Do you want to be X or O? ").upper()
     while player not in ['X', 'O']:
