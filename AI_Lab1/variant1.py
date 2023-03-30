@@ -63,23 +63,27 @@ def solve_maze(search_algo):
         while not q.empty():
             step += 1
             print(f"Step {step}:")
-            pos = q.get()
-            visited.add(pos)
-            visualize(maze, None, visited)  # Visualize the maze with visited nodes
-            print(f"  Visited: {pos}")
-            if pos == end_pos:
-                # Found the end position, reconstruct the path
-                path = [end_pos]
-                while path[-1] != start_pos:
-                    path.append(parent[path[-1]])
-                path.reverse()
-                visualize(maze, path)  # Visualize the maze with the path found
-                return path
-            for neighbor in get_neighbors(maze, pos):
-                if neighbor not in visited:
-                    q.put(neighbor)
-                    parent[neighbor] = pos
-                    print(f"  Added to queue: {neighbor}")
+            new_visited = set()
+            while not q.empty():
+                pos = q.get()
+                visited.add(pos)
+                visualize(maze, None, visited)  # Visualize the maze with visited nodes
+                print(f"  Visited: {pos}")
+                if pos == end_pos:
+                    # Found the end position, reconstruct the path
+                    path = [end_pos]
+                    while path[-1] != start_pos:
+                        path.append(parent[path[-1]])
+                    path.reverse()
+                    visualize(maze, path)  # Visualize the maze with the path found
+                    return path
+                for neighbor in get_neighbors(maze, pos):
+                    if neighbor not in visited and neighbor not in new_visited:
+                        q.put(neighbor)
+                        parent[neighbor] = pos
+                        new_visited.add(neighbor)
+                        print(f"  Added to queue: {neighbor}")
+            visited |= new_visited
             visualize(maze, None, visited)  # Visualize the maze with visited nodes
         # End position is unreachable
         return None
