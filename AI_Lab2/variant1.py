@@ -31,7 +31,21 @@ def draw_board(board):
 
 # Function to check if a move is valid
 def is_valid_move(board, row, col):
-    return board[row][col] == EMPTY
+    # Check if row and col are integers
+    if not isinstance(row, int) or not isinstance(col, int):
+        return False
+
+    # Check if the row and col are within the bounds of the board
+    if row < 0 or row >= len(board) or col < 0 or col >= len(board[0]):
+        return False
+
+    # Check if the specified cell is empty
+    if board[row][col] == EMPTY:
+        return True
+
+    # Otherwise, the move is not valid
+    return False
+
 
 
 # Function to make a move on the board
@@ -146,13 +160,17 @@ def play_game():
         time.sleep(1)
         move, _ = get_best_move(board, 4, -float('inf'), float('inf'), COMPUTER)
         make_move(board, move[0], move[1], COMPUTER)
-
     # Loop until the game is over
     while not is_game_over(board):
         draw_board(board)
         # Player's turn
-        row = int(input('Enter row (1-3): ')) - 1
-        col = int(input('Enter column (1-3): ')) - 1
+        row = input('Enter row (1-3): ')
+        col = input('Enter column (1-3): ')
+        if row.isdigit() and col.isdigit():
+            row = int(row)-1
+            col = int(col)-1
+        else:
+            print("Please enter an integer.")
         if is_valid_move(board, row, col):
             make_move(board, row, col, PLAYER)
             draw_board(board)
