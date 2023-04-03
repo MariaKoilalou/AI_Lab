@@ -151,13 +151,8 @@ def play_game():
     while not is_game_over(board):
         draw_board(board)
         # Player's turn
-        try:
-            row = int(input('Enter row (1-3): ')) - 1
-            col = int(input('Enter column (1-3): ')) - 1
-            make_move(board, row, col, PLAYER)
-        except:
-            print('Invalid move!')
-            continue
+        row = int(input('Enter row (1-3): ')) - 1
+        col = int(input('Enter column (1-3): ')) - 1
         if is_valid_move(board, row, col):
             make_move(board, row, col, PLAYER)
             draw_board(board)
@@ -166,7 +161,6 @@ def play_game():
             continue
         if is_game_over(board):
             break
-
         # Computer's turn
         print('Computer is thinking...')
         time.sleep(1)
@@ -182,6 +176,7 @@ def play_game():
         print('Player wins!')
     else:
         print('Tie game!')
+
 
 
 if __name__ == '__main__':
