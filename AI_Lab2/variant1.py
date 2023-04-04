@@ -47,7 +47,6 @@ def is_valid_move(board, row, col):
     return False
 
 
-
 # Function to make a move on the board
 def make_move(board, row, col, player):
     board[row][col] = player
@@ -124,7 +123,6 @@ def get_best_move(board, depth, alpha, beta, player):
             if is_valid_move(board, row, col):
                 # Make the move
                 make_move(board, row, col, player)
-
                 # Recursively get the score for the move
                 _, score = get_best_move(board, depth - 1, alpha, beta, PLAYER if player == COMPUTER else COMPUTER)
 
@@ -158,7 +156,7 @@ def play_game():
         # Computer plays first
         print('Computer is thinking...')
         time.sleep(1)
-        move, _ = get_best_move(board, 4, -float('inf'), float('inf'), COMPUTER)
+        move, _ = get_best_move(board, 100, -float('inf'), float('inf'), COMPUTER)
         make_move(board, move[0], move[1], COMPUTER)
     # Loop until the game is over
     while not is_game_over(board):
@@ -167,8 +165,8 @@ def play_game():
         row = input('Enter row (1-3): ')
         col = input('Enter column (1-3): ')
         if row.isdigit() and col.isdigit():
-            row = int(row)-1
-            col = int(col)-1
+            row = int(row) - 1
+            col = int(col) - 1
         else:
             print("Please enter an integer.")
         if is_valid_move(board, row, col):
@@ -194,7 +192,6 @@ def play_game():
         print('Player wins!')
     else:
         print('Tie game!')
-
 
 
 if __name__ == '__main__':

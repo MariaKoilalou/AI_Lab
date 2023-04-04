@@ -32,7 +32,9 @@ def evolve(fitness, x_init, y_init, sigma, mut_prob, n_generations):
             x = x
             y = y
         # Update sigma and mutation probability
+        # The factor 0.2 controls the rate at which sigma decreases
         sigma *= np.exp(-0.2 * i / n_generations)
+        # The factor 0.05 controls the magnitude of this noise.
         mut_prob *= np.exp(0.05 * np.random.randn())
     return best_fitness, best_x, best_y
 
