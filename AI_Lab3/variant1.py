@@ -3,6 +3,25 @@ import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 import time
 
+# This code implements an optimization algorithm called Evolutionary Strategy (1+1) for the Rosenbrock function in 3D
+# space. The Rosenbrock function is a commonly used test function for optimization algorithms. The goal of the
+# algorithm is to find the minimum value of the Rosenbrock function by generating new candidate solutions (i.e.,
+# offspring) through mutations of the current best solution (i.e., parent), and selecting the best one based on the
+# fitness value (i.e., the value of the Rosenbrock function).
+
+# The algorithm takes the following inputs from the user:
+
+# The range of values for the x and y variables. The mutation strength (sigma). The mutation probability. The number
+# of generations (i.e., the number of times the algorithm will generate new offspring and evaluate their fitness).
+# The algorithm starts by initializing the population with a random value of x and y within the user-specified
+# ranges. Then, it generates new offspring by adding random Gaussian noise to the parent's x and y values,
+# and evaluates their fitness. If the offspring has a better fitness value than the parent, it becomes the new
+# parent. The algorithm repeats this process for the specified number of generations, gradually reducing the mutation
+# strength and varying the mutation probability.
+
+# After the optimization process, the algorithm returns the best fitness value, the corresponding x and y values,
+# and the optimization time. It also plots the optimization process in 3D space by showing the surface of the
+# Rosenbrock function and the trajectory of the best solution over generations
 
 # Define the Rosenbrock function
 def rosenbrock(x, y):
