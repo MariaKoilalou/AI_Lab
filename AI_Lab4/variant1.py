@@ -9,10 +9,17 @@ from sklearn.metrics import mean_squared_error, r2_score
 # Load the dataset into a pandas DataFrame
 df = pd.read_csv('variant1.csv')
 
-# Convert categorical variables to numerical using one-hot encoding or label encoding
+# Convert categorical variables to numerical using one-hot encoding or label encoding 
 df = pd.get_dummies(df, columns=['waterfront', 'view', 'condition', 'grade'])
 
 # Split the dataset into training, validation, and test sets
+# Splitting the dataset into
+# training, validation, and test sets means dividing the available data into three separate subsets to be used for
+# different purposes in building a predictive model.
+# The training set is used to train the model, meaning the model
+# learns the relationships between the input features and the target variable. The validation set is used to tune the
+# hyperparameters of the model and prevent overfitting. Finally, the test set is used to evaluate the performance of
+# the model on new, unseen data.
 train, test = train_test_split(df, test_size=0.2, random_state=42)
 train, val = train_test_split(train, test_size=0.2, random_state=42)
 
