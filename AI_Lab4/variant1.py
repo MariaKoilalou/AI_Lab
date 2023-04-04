@@ -27,7 +27,7 @@ lr = LinearRegression()
 # Train the model on the training data
 lr.fit(train[features], train[target])
 
-# Use the validation set to tune hyper parameters
+# Use the validation set to tune hyperparameters
 lr_pred_val = lr.predict(val[features])
 lr_mse_val = mean_squared_error(val[target], lr_pred_val)
 lr_r2_val = r2_score(val[target], lr_pred_val)
