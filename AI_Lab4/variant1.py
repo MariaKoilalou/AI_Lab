@@ -71,3 +71,9 @@ print('MSE:', rf_mse_val)
 print('R-squared:', rf_r2_val)
 print('Test Set Metrics:')
 print('MSE:', rf_mse_test)
+print('RMSE:', rf_rmse_test)
+print('R-squared:', rf_r2_test)
+if lr_mse_test < rf_mse_test:
+    print('\nLinear Regression Model performed better on the test set with lower MSE')
+else:
+    print('\nRandom Forest Regression Model performed better on the test set with lower MSE')
