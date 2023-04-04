@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import mpl_toolkits.mplot3d.axes3d as p3
 import time
 
 
@@ -39,14 +40,14 @@ def evolve(fitness, x_init, y_init, sigma, mut_prob, n_generations):
     return best_fitness, best_x, best_y
 
 
-# suggest a range of values for the user input
+# Suggest a range of values for the user input
 x_range = (-5, 5)
 y_range = (-5, 5)
 mutation_strength_range = (0.01, 0.5)
 mutation_probability_range = (0.01, 0.5)
 num_generations_range = (100, 1000)
 
-# print the suggested ranges to the user
+# Print the suggested ranges to the user
 print("Suggested parameter ranges:")
 print(f"x range: {x_range}")
 print(f"y range: {y_range}")
@@ -83,14 +84,23 @@ print(f"Best x: {best_x}")
 print(f"Best y: {best_y}")
 print(f"Optimization time: {opt_time:.6f} seconds")
 
-# Plot the optimization process
+# Plot the optimization process in 3D
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.plot([best_x], [best_y], [best_fitness], 'r*', markersize=10)
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_zlabel('fitness')
+ax.set_title('Evolutionary Strategy (1+1) for Rosenbrock Function')
+
+# Create meshgrid for 3D plot
 x = np.linspace(x_min, x_max, 100)
 y = np.linspace(y_min, y_max, 100)
 X, Y = np.meshgrid(x, y)
 Z = rosenbrock(X, Y)
-plt.contour(X, Y, Z, levels=50, cmap='cool')
-plt.plot([best_x], [best_y], 'r*', markersize=10)
-plt.title("Evolutionary Strategy (1+1) for Rosenbrock Function")
-plt.xlabel("x")
-plt.ylabel("y")
+
+# Plot the surface
+ax.plot_surface(X, Y, Z, cmap='cool', alpha=0.8)
+
 plt.show()
+
