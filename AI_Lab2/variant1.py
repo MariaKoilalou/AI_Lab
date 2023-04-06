@@ -156,7 +156,7 @@ def play_game():
         # Computer plays first
         print('Computer is thinking...')
         time.sleep(1)
-        move, _ = get_best_move(board, 100, -float('inf'), float('inf'), COMPUTER)
+        move, _ = get_best_move(board, 3, -float('inf'), float('inf'), COMPUTER)
         make_move(board, move[0], move[1], COMPUTER)
     # Loop until the game is over
     while not is_game_over(board):
