@@ -27,3 +27,10 @@ The `AI_Lab3` folder contains the files for our first lab assignment, which incl
 - A report in PDF format describing the methodology, results, and conclusions of our project. See [AI_Lab3-report.pdf](AI_Lab3/AI_Lab3-report.pdf).
 - A Python script named `variant1.py` which implements the machine learning model discussed in the report. See [variant1.py](AI_Lab3/variant1.py).
 
+
+## AI_Lab 4
+
+The `AI_Lab4` folder contains the files for our first lab assignment, which includes:
+
+- A report in PDF format describing the methodology, results, and conclusions of our project. See [AI_Lab4-report.pdf](AI_Lab4/AI_Lab4-report.pdf).
+- A Python script named `variant1.py` which implements the machine learning model discussed in the report. See [variant1.py](AI_Lab4/variant1.py).
