@@ -26,7 +26,6 @@ train, val = train_test_split(train, test_size=0.2, random_state=42)
 features = ['bathrooms', 'floors', 'waterfront', 'view', 'condition', 'grade', 'yr_built', 'yr_renovated']
 target = 'price'
 
-print(train.columns)
 
 # Linear Regression Model
 lr = LinearRegression()
