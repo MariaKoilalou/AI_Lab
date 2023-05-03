@@ -1,6 +1,7 @@
 # Import necessary libraries
 import pandas as pd
 import numpy as np
+from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
@@ -9,9 +10,20 @@ from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
 
-
 # Load the dataset into a pandas DataFrame
 df = pd.read_csv('variant1.csv')
+
+# Print the head of the dataset to inspect the values
+print(df.head())
+
+# Print the basic information about the dataset
+print(df.info())
+
+# Prints descriptive statistics about total count, mean, standard deviation, minimum, maximum, and quartiles
+print(df.describe())
+
+# Handling missing data
+df = df.dropna()
 
 # Label encode categorical variables
 le = LabelEncoder()
@@ -22,25 +34,38 @@ df['grade'] = le.fit_transform(df['grade'])
 df['date'] = pd.to_datetime(df['date'])
 df['price'] = pd.to_numeric(df['price'], errors='coerce')
 
-# Split the dataset into training, validation, and test sets
-train, test = train_test_split(df, test_size=0.2, random_state=42)
-train, val = train_test_split(train, test_size=0.2, random_state=42)
+# Scale numeric features
+scaler = StandardScaler()
+df[['bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'waterfront', 'view',
+    'condition', 'grade', 'sqft_above', 'sqft_basement', 'yr_built', 'yr_renovated']] = scaler.fit_transform(
+    df[['bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'waterfront', 'view',
+        'condition', 'grade', 'sqft_above', 'sqft_basement', 'yr_built', 'yr_renovated']])
 
-# Define the features and target variable
-features = ['bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'waterfront', 'view',
-            'condition', 'grade', 'sqft_above', 'sqft_basement', 'yr_built', 'yr_renovated' , 'lat', 'long',
-            'sqft_living15', 'sqft_lot15']
-target = 'price'
+# Dataset after scaling
+print(df.head())
 
-# Add the target variable to the list of features
-features.append(target)
+# Adding the Type column
+df['type'] = 'variant1'
 
-corr_matrix = train[features].corr()
+# Categorizing quality
+df['price_category'] = np.where(df['price'] > 5.401822e+05, 'expensive', 'cheap')
+
+# Encoding categorical variables
+df = pd.get_dummies(df, columns=['type', 'price_category'])
+
+features = df.drop(columns=['id', 'date', 'zipcode', 'lat', 'long'])
+target = df['price']
+
+print(df['price'])
+
+f_train, f_test, t_train, t_test = train_test_split(features, target, test_size=0.2, random_state=42)
+
+# Compute the correlation matrix for the training features
+corr_matrix = f_train.corr()
 
 # Sort the correlations with 'price' in descending order
-corr_with_price = corr_matrix[target].sort_values(ascending=False)
+corr_with_price = corr_matrix['price'].sort_values(ascending=False)
 
-print(corr_with_price)
 # Define the threshold for correlation
 corr_threshold = 0.5
 
@@ -48,100 +73,24 @@ corr_threshold = 0.5
 high_corr_features = list(corr_with_price[abs(corr_with_price) >= corr_threshold].index)
 
 # Remove the target variable from the list of features
-high_corr_features.remove(target)
+high_corr_features.remove('price')
 
-# Use only high correlation features
-features = high_corr_features
+# Use only high correlation features in the training set
+f_train = f_train[high_corr_features]
 
-# Scale numeric features
-scaler = StandardScaler()
-train[features] = scaler.fit_transform(train[features])
-val[features] = scaler.transform(val[features])
-test[features] = scaler.transform(test[features])
+# Use only high correlation features in the test set
+f_test = f_test[high_corr_features]
 
+print(high_corr_features)
 
 # Linear Regression Model
-lr = LinearRegression()
-
-# Train the model on the training data
-lr.fit(train[features], train[target])
-
-# Use the validation set to tune hyperparameters
-lr_pred_val = lr.predict(val[features])
-lr_mse_val = mean_squared_error(val[target], lr_pred_val)
-lr_r2_val = r2_score(val[target], lr_pred_val)
-
-# Evaluate the model using metrics such as Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and R-squared
-lr_pred_test = lr.predict(test[features])
-lr_mse_test = mean_squared_error(test[target], lr_pred_test)
-lr_rmse_test = np.sqrt(lr_mse_test)
-lr_r2_test = r2_score(test[target], lr_pred_test)
-
-# Random Forest Regression Model
-rf = RandomForestRegressor(n_estimators=100, max_depth=20, random_state=42)
-
-# Train the model on the training data
-rf.fit(train[features], train[target])
-
-# Use the validation set to tune hyperparameters
-rf_pred_val = rf.predict(val[features])
-rf_mse_val = mean_squared_error(val[target], rf_pred_val)
-rf_r2_val = r2_score(val[target], rf_pred_val)
-
-# Evaluate the model using metrics such as Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and R-squared
-rf_pred_test = rf.predict(test[features])
-rf_mse_test = mean_squared_error(test[target], rf_pred_test)
-rf_rmse_test = np.sqrt(rf_mse_test)
-rf_r2_test = r2_score(test[target], rf_pred_test)
-
-# Define an instance of the SVM model:
-svm = SVR(kernel='rbf')
-
-# Train the SVM model on the training data
-svm.fit(train[features], train[target])
-
-# Use the validation set to tune hyperparameters
-svm_pred_val = svm.predict(val[features])
-svm_mse_val = mean_squared_error(val[target], svm_pred_val)
-svm_r2_val = r2_score(val[target], svm_pred_val)
-
-# Evaluate the model using metrics such as Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and R-squared
-svm_pred_test = svm.predict(test[features])
-svm_mse_test = mean_squared_error(test[target], svm_pred_test)
-svm_rmse_test = np.sqrt(svm_mse_test)
-svm_r2_test = r2_score(test[target], svm_pred_test)
-
-# Comparison of Metrics
-print('Linear Regression Model:')
-print('Validation Set Metrics:')
-print('MSE:', lr_mse_val)
-print('R-squared:', lr_r2_val)
-print('Test Set Metrics:')
-print('MSE:', lr_mse_test)
-print('RMSE:', lr_rmse_test)
-print('R-squared:', lr_r2_test)
-
-print('\nRandom Forest Regression Model:')
-print('Validation Set Metrics:')
-print('MSE:', rf_mse_val)
-print('R-squared:', rf_r2_val)
-print('Test Set Metrics:')
-print('MSE:', rf_mse_test)
-print('RMSE:', rf_rmse_test)
-print('R-squared:', rf_r2_test)
-
-print('\nSupport Vector Machine Regression Model:')
-print('Validation Set Metrics:')
-print('MSE:', svm_mse_val)
-print('R-squared:', svm_r2_val)
-print('Test Set Metrics:')
-print('MSE:', svm_mse_test)
-print('RMSE:', svm_rmse_test)
-print('R-squared:', svm_r2_test)
-
-if lr_mse_test < rf_mse_test and lr_mse_test < svm_mse_test:
-    print('\nLinear Regression Model performed better on the test set with lower MSE')
-elif rf_mse_test < lr_mse_test and rf_mse_test < svm_mse_test:
-    print('\nRandom Forest Regression Model performed better on the test set with lower MSE')
-else:
-    print('\nSupport Vector Machine Regression Model performed better on the test set with lower MSE')
+lin_reg = LinearRegression()
+lin_reg.fit(f_train, t_train)
+t_pred_lin = lin_reg.predict(f_test)
+mse_lin = mean_squared_error(t_test, t_pred_lin)
+r2_lin = lin_reg.score(f_test, t_test)
+rmse_lin = mean_squared_error(t_test, t_pred_lin, squared=False)
+print("Linear Regression model:")
+print("MSE:", mse_lin)
+print("R2 score:", r2_lin)
+print("RMSE:", rmse_lin)
