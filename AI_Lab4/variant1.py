@@ -7,6 +7,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.preprocessing import StandardScaler
+
 
 # Load the dataset into a pandas DataFrame
 df = pd.read_csv('variant1.csv')
@@ -17,14 +19,45 @@ df['waterfront'] = le.fit_transform(df['waterfront'])
 df['view'] = le.fit_transform(df['view'])
 df['condition'] = le.fit_transform(df['condition'])
 df['grade'] = le.fit_transform(df['grade'])
+df['date'] = pd.to_datetime(df['date'])
+df['price'] = pd.to_numeric(df['price'], errors='coerce')
 
 # Split the dataset into training, validation, and test sets
 train, test = train_test_split(df, test_size=0.2, random_state=42)
 train, val = train_test_split(train, test_size=0.2, random_state=42)
 
 # Define the features and target variable
-features = ['bathrooms', 'floors', 'waterfront', 'view', 'condition', 'grade', 'yr_built', 'yr_renovated']
+features = ['bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'waterfront', 'view',
+            'condition', 'grade', 'sqft_above', 'sqft_basement', 'yr_built', 'yr_renovated' , 'lat', 'long',
+            'sqft_living15', 'sqft_lot15']
 target = 'price'
+
+# Add the target variable to the list of features
+features.append(target)
+
+corr_matrix = train[features].corr()
+
+# Sort the correlations with 'price' in descending order
+corr_with_price = corr_matrix[target].sort_values(ascending=False)
+
+print(corr_with_price)
+# Define the threshold for correlation
+corr_threshold = 0.5
+
+# Filter features to only include those with high correlation
+high_corr_features = list(corr_with_price[abs(corr_with_price) >= corr_threshold].index)
+
+# Remove the target variable from the list of features
+high_corr_features.remove(target)
+
+# Use only high correlation features
+features = high_corr_features
+
+# Scale numeric features
+scaler = StandardScaler()
+train[features] = scaler.fit_transform(train[features])
+val[features] = scaler.transform(val[features])
+test[features] = scaler.transform(test[features])
 
 
 # Linear Regression Model
