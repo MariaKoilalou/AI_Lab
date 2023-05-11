@@ -1,14 +1,9 @@
 # Import necessary libraries
-import ax as ax
 import pandas as pd
 import seaborn as sns
 import warnings
 import plotly.graph_objs as go
 import matplotlib.pyplot as plt
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, roc_curve, roc_auc_score
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
 
 warnings.simplefilter("ignore")
 
@@ -23,9 +18,6 @@ print("Dataset:", data.head())
 
 # Looking for missing values in the dataset
 print("Null Values:", data.isna().sum())
-
-# Drop Duplicate Values
-data = data.drop_duplicates().reset_index(drop=True)
 
 # Print General Information about the dataset
 print("Information about Dataset:", data.info())
@@ -71,6 +63,27 @@ sns.heatmap(numeric_data.corr(), annot=True, fmt='.1g', cmap="Greens_r", cbar=Fa
 plt.title('Linear Correlation Matrix')
 plt.show()
 
+#Absolute Corralation
+corr_df = data.corr('spearman').stack().reset_index(name='corr')
+corr_df.loc[corr_df['corr'] == 1, 'corr'] = 0  # Remove diagonal
+corr_df['abs'] = corr_df['corr'].abs()
+alt.Chart(corr_df).mark_circle().encode(
+    x='level_0',
+    y='level_1',
+    size='abs',
+    color=alt.Color('corr', scale=alt.Scale(scheme='blueorange', domain=(-1, 1))))
+
+numeric_features = data.select_dtypes(include=[np.number])
+print("Numeric Columns:", numeric_features.columns)
+
+categorical_features = data.select_dtypes(include=[np.object])
+print("Categorical Columns:", categorical_features.columns)
+
+# Most correlated with target
+correlation = numeric_features.corr()
+print(correlation['target'].sort_values(ascending = False),'\n')
+
+
 # Scatter chart for "loudness" and "energy"
 sns.lmplot(y='loudness', x='energy', data=data, hue='target', palette='BuGn')
 
@@ -94,11 +107,11 @@ discrete_cols = ['key', 'mode', 'time_signature', 'target']
 
 # Examine Continuous Data
 fig, axes = plt.subplots(5, 2, figsize=(16, 20))
-palettes = ['Greens_r', "Reds_r", "Blues_r"]
+palettes = ['Set1', 'rocket', 'dark', 'viridis']
 axes = axes.flatten()
 ax_no = 0
 for col in continuous_cols:
-    sns.set_palette(palettes[ax_no % 3])
+    sns.set_palette(palettes[ax_no % 4])
     sns.histplot(data=data, x=col, hue='target', bins=25, kde=True, ax=axes[ax_no])
     ax_no += 1
 fig.suptitle('Distributions of Continuous Features')
@@ -116,26 +129,10 @@ for col in discrete_cols:
 fig.suptitle('Distributions of Discrete Features')
 plt.show()
 
-le = LabelEncoder()
-cols = ['song_title', 'artist']
-data[cols] = data[cols].apply(le.fit_transform)
-
-X = data.drop('target', axis=True)
-y = data['target']
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-clf_random_forest = RandomForestClassifier()
-clf_random_forest = clf_random_forest.fit(X_train, y_train)
-random_forest_predictions = clf_random_forest.predict(X_test)
-
-accuracy_random_forest = accuracy_score(y_test, random_forest_predictions) * 100
-
-r_fpr, r_tpr, _ = roc_curve(y_test, random_forest_predictions)
-r_auc = roc_auc_score(y_test, random_forest_predictions)
-plt.plot(r_fpr, r_tpr, label='Random Forest Prediction (area={:.3f})'.format(r_auc))
-plt.title('ROC plot Random Forest Classifier')
-plt.xlabel('False Positive rate')
-plt.ylabel('True Positive rate')
-plt.legend(loc='best')
+# Correlation between all pairs
+sns.set()
+columns = ['acousticness', 'danceability', 'duration_ms', 'energy',
+           'instrumentalness', 'key', 'liveness', 'loudness', 'mode',
+           'speechiness', 'tempo', 'time_signature', 'valence', 'target']
+sns.pairplot(data[columns], size=2, kind='scatter', diag_kind='kde')
 plt.show()
