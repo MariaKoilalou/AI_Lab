@@ -32,18 +32,10 @@ model.compile(loss='categorical_crossentropy',
 
 
 # Define hyperparameters
-learning_rates = [0.1, 0.01, 0.001]
-batch_sizes = [1, 32, 128]
-num_hidden_layers = [0, 1, 2]
-hidden_layer_widths = [64, 128, 256]
-loss_functions = ['mse', 'mae', 'categorical_crossentropy']
-
-
-# Define hyperparameters
-learning_rates = [0.1, 0.01, 0.001]
-batch_sizes = [1, 32, 128]
-num_hidden_layers = [0, 1, 2]
-hidden_layer_widths = [64, 128, 256]
+learning_rates = [0.1]
+batch_sizes = [128]
+num_hidden_layers = [0, 1]
+hidden_layer_widths = [64, 128]
 loss_functions = ['mse', 'mae', 'categorical_crossentropy']
 
 # Train and evaluate the model for different hyperparameters
@@ -64,7 +56,7 @@ for lr in learning_rates:
                     model.compile(loss=loss_fn, optimizer=keras.optimizers.SGD(
                         lr=lr), metrics=['accuracy'])
                     history = model.fit(
-                        X_train, y_train, epochs=10, batch_size=batch_size, validation_data=(X_valid, y_valid))
+                        X_train, y_train, epochs=5, batch_size=batch_size, validation_data=(X_valid, y_valid))
                     val_accuracy = history.history['val_accuracy'][-1]
                     results.append({'lr': lr, 'batch_size': batch_size, 'num_hidden': num_hidden,
                                    'width': width, 'loss_fn': loss_fn, 'history': history, 'val_accuracy': val_accuracy})
