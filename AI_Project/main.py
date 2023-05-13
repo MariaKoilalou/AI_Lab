@@ -1,4 +1,5 @@
 # Import necessary libraries
+import alt as alt
 import pandas as pd
 import seaborn as sns
 import warnings
@@ -63,7 +64,7 @@ sns.heatmap(numeric_data.corr(), annot=True, fmt='.1g', cmap="Greens_r", cbar=Fa
 plt.title('Linear Correlation Matrix')
 plt.show()
 
-#Absolute Corralation
+# Absolute Corralation
 corr_df = data.corr('spearman').stack().reset_index(name='corr')
 corr_df.loc[corr_df['corr'] == 1, 'corr'] = 0  # Remove diagonal
 corr_df['abs'] = corr_df['corr'].abs()
@@ -81,8 +82,7 @@ print("Categorical Columns:", categorical_features.columns)
 
 # Most correlated with target
 correlation = numeric_features.corr()
-print(correlation['target'].sort_values(ascending = False),'\n')
-
+print(correlation['target'].sort_values(ascending=False), '\n')
 
 # Scatter chart for "loudness" and "energy"
 sns.lmplot(y='loudness', x='energy', data=data, hue='target', palette='BuGn')
