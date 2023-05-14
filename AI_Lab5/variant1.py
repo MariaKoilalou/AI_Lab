@@ -114,10 +114,10 @@ for loss_fn in loss_functions:
 for result in results:
     print(result)
 
-
+plt.subplots_adjust(hspace=1, wspace=2)
 
 for result in results:
-    plt.subplots_adjust(hspace=0.8, wspace=1)
+    print(result)
     plt.plot(result['history'].history['loss'], label='Training Loss')
     plt.plot(result['history'].history['val_loss'], label='Validation Loss')
     plt.title('Loss - LR={}, Batch Size={}, Loss Function={}'.format(
@@ -127,8 +127,8 @@ for result in results:
     plt.legend()
     plt.show()
 
-    plt.plot(result['history'].history['loss'], label='Training Loss')
-    plt.plot(result['history'].history['val_loss'], label='Validation Loss')
+    plt.plot(result['history'].history['accuracy'], label='Training Accuracy')
+    plt.plot(result['history'].history['val_accuracy'],label='Validation Accuracy')
     plt.title('Accuracy - LR={}, Batch Size={}, Num Hidden Layers={}, Width={}, Loss Function={}'.format(
         result['lr'], result['batch_size'], result['num_hidden'], result['width'], result['loss_fn']))
     plt.xlabel('Epochs')

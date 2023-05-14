@@ -54,7 +54,7 @@ for lr, batch_size, num_hidden, width, loss_fn in hyperparameters:
 
     # Fit the model with the early stopping callback
     history = model.fit(
-        X_train, y_train, epochs=50, batch_size=batch_size, validation_data=(X_valid, y_valid),
+        X_train, y_train, epochs=2, batch_size=batch_size, validation_data=(X_valid, y_valid),
         callbacks=[early_stopping])
 
     val_accuracy = history.history['val_accuracy'][-1]
