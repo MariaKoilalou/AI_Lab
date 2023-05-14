@@ -105,7 +105,7 @@ for loss_fn in loss_functions:
 
     val_accuracy = history.history['val_accuracy'][-1]
     results.append(
-        {'lr': 0.01, 'batch_size': 64, 'num_hidden': 1, 'width': 128, 'loss_fn': loss_fn, 'histore': history,
+        {'lr': 0.01, 'batch_size': 64, 'num_hidden': 1, 'width': 128, 'loss_fn': loss_fn, 'history': history,
          'val_accuracy': val_accuracy})
 
 # Print results
