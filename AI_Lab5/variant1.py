@@ -57,7 +57,7 @@ for batch_size in batch_sizes:
 
         val_accuracy = history.history['val_accuracy'][-1]
         results.append({'lr': lr, 'batch_size': batch_size, 'num_hidden': 1,
-                        'width': 128, 'loss_fn': 'categorical_crossentropy',
+                        'width': 128, 'loss_fn': 'categorical_crossentropy', 'history': history,
                         'val_accuracy': val_accuracy})
 
 for layers in num_hidden_layers:
@@ -73,7 +73,7 @@ for layers in num_hidden_layers:
 
     val_accuracy = history.history['val_accuracy'][-1]
     results.append(
-        {'lr': 0.01, 'batch_size': 64, 'num_hidden': layers, 'width': 128, 'loss_fn': 'categorical_crossentropy',
+        {'lr': 0.01, 'batch_size': 64, 'num_hidden': layers, 'width': 128, 'loss_fn': 'categorical_crossentropy', 'history': history,
          'val_accuracy': val_accuracy})
 
 for width in hidden_layer_widths:
@@ -89,7 +89,7 @@ for width in hidden_layer_widths:
 
     val_accuracy = history.history['val_accuracy'][-1]
     results.append(
-        {'lr': 0.01, 'batch_size': 64, 'num_hidden': 1, 'width': width, 'loss_fn': 'categorical_crossentropy',
+        {'lr': 0.01, 'batch_size': 64, 'num_hidden': 1, 'width': width, 'loss_fn': 'categorical_crossentropy', 'history': history,
          'val_accuracy': val_accuracy})
 
 for loss_fn in loss_functions:
