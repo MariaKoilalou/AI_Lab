@@ -108,9 +108,16 @@ for loss_fn in loss_functions:
         {'lr': 0.01, 'batch_size': 64, 'num_hidden': 1, 'width': 128, 'loss_fn': loss_fn, 'history': history,
          'val_accuracy': val_accuracy})
 
+# Remove duplicates from the results list
+unique_results = list(set(tuple(d.items()) for d in results))
+results = [dict(item) for item in unique_results]
+
 # Print results
 for result in results:
     print(result)
+
+fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10, 10))
+plt.subplots_adjust(hspace=0.8, wspace=0.8)
 
 for result in results:
     plt.plot(result['history'].history['loss'], label='Training Loss')
