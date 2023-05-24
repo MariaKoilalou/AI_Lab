@@ -2,9 +2,10 @@ import gymnasium as gym
 import numpy as np
 
 if __name__ == '__main__':
-    # Initialize the environment
+    # Create the gymnasium environment
     env = gym.make('CartPole-v1')
 
+    # Get the number of states and actions
     n_states = env.observation_space.shape[0]
     n_actions = env.action_space.n
 
@@ -20,7 +21,7 @@ if __name__ == '__main__':
     # Main loop for episodes
     for episode in range(n_episodes):
         state = env.reset()
-        done = False
+        total_reward = 0
 
         for step in range(max_steps):
             # Choose action from the current state with an epsilon-greedy policy
@@ -42,11 +43,14 @@ if __name__ == '__main__':
             Q[state_array, action] = new_q
 
             state = next_state
+            total_reward += reward
 
             if terminated or truncated:
                 break
 
-    # Use the Q-table to choose the best actions in the environment
+        print(f"Episode: {episode + 1}, Steps: {step + 1}, Total Reward: {total_reward}")
+
+    # Use the learned Q-table to choose the best actions in the environment
     state = env.reset()
     done = False
 
@@ -60,4 +64,5 @@ if __name__ == '__main__':
             break
 
     env.close()
+
 
