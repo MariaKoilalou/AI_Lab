@@ -1,0 +1,57 @@
+import gym
+import numpy as np
+
+if __name__ == '__main__':
+    # Initialisation de l'environnement
+    env = gym.make('CartPole-v1')
+    n_states = env.observation_space.shape[0]
+    n_actions = env.action_space.n
+
+    # Hyperparamètres pour l'algorithme Q-learning
+    learning_rate = 0.1
+    discount_factor = 0.99
+    n_episodes = 1000
+    max_steps = 100
+
+    # Initialisation de la table Q
+    Q = np.zeros((n_states, n_actions))
+
+    # Boucle principale pour les épisodes
+    for episode in range(n_episodes):
+        state = env.reset()
+
+        done = False
+
+        for step in range(max_steps):
+            # Choix de l'action à partir de l'état actuel avec une politique epsilon-greedy
+            epsilon = 0.1  # Paramètre d'exploration
+            if np.random.uniform(0, 1) < epsilon:
+                action = env.action_space.sample()  # Action aléatoire
+            else:
+                action = np.argmax(Q[state])  # Action optimale
+
+            # Exécution de l'action et observation du nouvel état, de la récompense, etc.
+            next_state, reward, done, _ = env.step(action)
+
+            # Mise à jour de la valeur Q pour l'état-action courant
+            current_q = Q[state, action]
+            max_next_q = np.max(Q[next_state])
+            new_q = (1 - learning_rate) * current_q + learning_rate * \
+                (reward + discount_factor * max_next_q)
+            Q[state, action] = new_q
+
+            state = next_state
+
+            if done:
+                break
+
+    # Utilisation de la table Q pour choisir les meilleures actions dans l'environnement
+    state = env.reset()
+    done = False
+
+    while not done:
+        action = np.argmax(Q[state])
+        next_state, _, done, _ = env.step(action)
+        state = next_state
+
+    env.close()
