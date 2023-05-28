@@ -1,5 +1,6 @@
 import gymnasium as gym
 import numpy as np
+import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     # Create the gymnasium environment
@@ -10,16 +11,19 @@ if __name__ == '__main__':
     n_actions = env.action_space.n
 
     # Hyperparameters for the Q-learning algorithm
+    alpha = 0.7  # Learning rate
+    gamma = 0.99  # Discount factor
+    epsilon = 0.5  # Exploration rate
     learning_rate = 0.1
     discount_factor = 0.99
     n_episodes = 1000
     max_steps = 100
 
-    # Initialize the Q-table
-    Q = np.zeros((n_states, n_actions))
-
     # List to store rewards per episode
     rewards_per_episode = []
+
+    # Initialize the Q-table
+    Q = np.zeros((n_states, n_actions))
 
     # Main loop for episodes
     for episode in range(n_episodes):
@@ -28,7 +32,6 @@ if __name__ == '__main__':
 
         for step in range(max_steps):
             # Choose action from the current state with an epsilon-greedy policy
-            epsilon = 0.1  # Exploration parameter
             if np.random.uniform(0, 1) < epsilon:
                 action = env.action_space.sample()  # Random action
             else:
@@ -42,7 +45,9 @@ if __name__ == '__main__':
             current_q = Q[state_array, action]
             next_state_array = next_state[0].astype(int)
             max_next_q = np.max(Q[next_state_array])
-            new_q = (1 - learning_rate) * current_q + learning_rate * (reward + discount_factor * max_next_q)
+            new_q = current_q + alpha * \
+                (reward + gamma * max_next_q - current_q)
+
             Q[state_array, action] = new_q
 
             state = next_state
@@ -52,11 +57,23 @@ if __name__ == '__main__':
                 break
 
         rewards_per_episode.append(total_reward)
-        print(f"Episode: {episode + 1}, Steps: {step + 1}, Total Reward: {total_reward}")
+
+        print("Q-table:")
+        print(Q)
+
+        print(
+            f"Episode: {episode + 1}, Steps: {step + 1}, Total Reward: {total_reward}")
 
     # Use the learned Q-table to choose the best actions in the environment
     state = env.reset()
     done = False
+
+    # Plotting rewards per episode
+    plt.plot(rewards_per_episode)
+    plt.xlabel('Episode')
+    plt.ylabel('Total Reward')
+    plt.title('Total Reward per Episode')
+    plt.show()
 
     while not done:
         state_array = state[0].astype(int)
