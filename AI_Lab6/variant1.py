@@ -4,9 +4,7 @@ import matplotlib.pyplot as plt
 
 
 def discretize_state(state):
-    """
-    This function takes a state (continuous) and returns a discretized representation of the state.
-    """
+
     bins = [
         np.linspace(-4.8, 4.8, 24),
         np.linspace(-5, 5, 24),
