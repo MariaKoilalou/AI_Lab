@@ -45,8 +45,7 @@ if __name__ == '__main__':
             current_q = Q[state_array, action]
             next_state_array = next_state[0].astype(int)
             max_next_q = np.max(Q[next_state_array])
-            new_q = current_q + alpha * \
-                (reward + gamma * max_next_q - current_q)
+            new_q = current_q + alpha * (reward + gamma*max_next_q-current_q)
 
             Q[state_array, action] = new_q
 
