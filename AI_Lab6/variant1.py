@@ -1,46 +1,61 @@
 import gymnasium as gym
 import numpy as np
+import matplotlib.pyplot as plt
+
+
+def discretize_state(state):
+    """
+    This function takes a state (continuous) and returns a discretized representation of the state.
+    """
+    bins = [
+        np.linspace(-4.8, 4.8, 24),
+        np.linspace(-5, 5, 24),
+        np.linspace(-0.418, 0.418, 48),
+        np.linspace(-5, 5, 24)
+    ]
+
+    state_index = []
+    for i in range(len(state[0])):
+        state_index.append(np.digitize(state[0][i], bins[i]) - 1)
+
+    return tuple(state_index)
+
 
 if __name__ == '__main__':
-    # Create the gymnasium environment
     env = gym.make('CartPole-v1')
-
-    # Get the number of states and actions
-    n_states = env.observation_space.shape[0]
     n_actions = env.action_space.n
+    n_states = (24, 24, 48, 48)
 
-    # Hyperparameters for the Q-learning algorithm
-    learning_rate = 0.1
-    discount_factor = 0.99
+    alpha = 0.7  # Learning rate
+    gamma = 0.99  # Discount factor
+    epsilon = 1.0  # Start with exploration
+    epsilon_min = 0.01  # Maintain some exploration
+    epsilon_decay = 0.995  # Decay rate of epsilon
     n_episodes = 1000
     max_steps = 100
 
-    # Initialize the Q-table
-    Q = np.zeros((n_states, n_actions))
+    rewards_per_episode = []
 
-    # Main loop for episodes
+    Q = np.zeros(n_states + (n_actions,))
+
     for episode in range(n_episodes):
-        state = env.reset()
+        state = discretize_state(env.reset())
         total_reward = 0
 
         for step in range(max_steps):
-            # Choose action from the current state with an epsilon-greedy policy
-            epsilon = 0.1  # Exploration parameter
             if np.random.uniform(0, 1) < epsilon:
-                action = env.action_space.sample()  # Random action
+                action = env.action_space.sample()
             else:
-                state_array = state[0].astype(int)
-                action = np.argmax(Q[state_array])
+                action = np.argmax(Q[state])
 
-            # Execute the action and observe the new state, reward, terminated, truncated, info
             next_state, reward, terminated, truncated, info = env.step(action)
+            next_state = discretize_state((next_state, info))
 
-            # Update the Q-value for the current state-action pair
-            current_q = Q[state_array, action]
-            next_state_array = next_state[0].astype(int)
-            max_next_q = np.max(Q[next_state_array])
-            new_q = (1 - learning_rate) * current_q + learning_rate * (reward + discount_factor * max_next_q)
-            Q[state_array, action] = new_q
+            current_q = Q[state + (action,)]
+            max_next_q = np.max(Q[next_state])
+            new_q = current_q + alpha * (reward + gamma * max_next_q - current_q)
+
+            Q[state + (action,)] = new_q
 
             state = next_state
             total_reward += reward
@@ -48,21 +63,28 @@ if __name__ == '__main__':
             if terminated or truncated:
                 break
 
+        rewards_per_episode.append(total_reward)
+
         print(f"Episode: {episode + 1}, Steps: {step + 1}, Total Reward: {total_reward}")
+        print(f"Max Q-Value: {np.max(Q)}, Sum of Q-Values: {np.sum(Q)}")
 
-    # Use the learned Q-table to choose the best actions in the environment
-    state = env.reset()
-    done = False
+        # decay epsilon
+        epsilon = max(epsilon_min, epsilon_decay * epsilon)
 
-    while not done:
-        state_array = state[0].astype(int)
-        action = np.argmax(Q[state_array])
+    plt.plot(rewards_per_episode)
+    plt.xlabel('Episode')
+    plt.ylabel('Total Reward')
+    plt.title('Total Reward per Episode')
+    plt.show()
+
+    state = discretize_state(env.reset())
+    terminated = False
+    truncated = False
+
+    while not terminated and not truncated:
+        action = np.argmax(Q[state])
         next_state, _, terminated, truncated, _ = env.step(action)
-        state = next_state
-
-        if terminated or truncated:
-            break
+        state = discretize_state((next_state, {}))
 
     env.close()
-
 

@@ -29,7 +29,7 @@ if __name__ == '__main__':
     for episode in range(n_episodes):
         state = env.reset()
         total_reward = 0
-
+        print(state)
         for step in range(max_steps):
             # Choose action from the current state with an epsilon-greedy policy
             if np.random.uniform(0, 1) < epsilon:
