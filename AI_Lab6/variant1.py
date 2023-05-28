@@ -32,7 +32,7 @@ if __name__ == '__main__':
     epsilon_min = 0.01  # Maintain some exploration
     epsilon_decay = 0.995  # Decay rate of epsilon
     n_episodes = 1000
-    max_steps = 250
+    max_steps = 300
 
     rewards_per_episode = []
 
