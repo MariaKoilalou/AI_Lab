@@ -51,4 +51,11 @@ The `AI_Lab6` folder contains the files for our first lab assignment, which incl
 
 - A report in PDF format describing the methodology, results, and conclusions of our project. See [AI_Lab6-report.pdf](AI_Lab6/AI_Lab6-report.pdf).
 - A Python script named `variant1.py` which implements the machine learning model discussed in the report. See [variant1.py](AI_Lab6/variant1.py).
-- A .csv file with the data used in our code. See [variant1.csv](AI_Lab6/variant1.csv)
+
+## AI_Lab 7
+
+The `AI_Lab7` folder contains the files for our first lab assignment, which includes:
+
+- A report in PDF format describing the methodology, results, and conclusions of our project. See [AI_Lab7-report.pdf](AI_Lab6/AI_Lab7-report.pdf).
+- A Prolog script named `variant1.pl` which implements the machine learning model discussed in the report. See [variant1.pl](AI_Lab7/variant1.pl).
+
