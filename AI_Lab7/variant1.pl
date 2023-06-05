@@ -45,7 +45,7 @@ sub_date(Date, DaysToSubtract, NewDate) :-
     atom_number(DayStr, Day),
     atom_number(MonthStr, Month),
     % Subtract number of dates
-    (   Day - DaysToSubtract > 0    /* Don't have to go to the previous month */
+    (   Day - DaysToSubtract >= 0    /* Don't have to go to the previous month */
     ->  NewDay is Day - DaysToSubtract,
         format_date(NewDay, Month, NewDate)
     ;   RemainingDays is DaysToSubtract - Day,  /* Has to go to the previous month */
@@ -54,10 +54,10 @@ sub_date(Date, DaysToSubtract, NewDate) :-
         ;   PrevMonth is Month - 1
         ),
         days_in_month(PrevMonth, DaysInPrevMonth),
-        NewDay is DaysInPrevMonth - RemainingDays,
-        format_date(NewDay, PrevMonth, FirstDayOfPrevMonth),
-        sub_date(FirstDayOfPrevMonth, RemainingDays, NewDate)
+        NewDay is DaysInPrevMonth - RemainingDays + 1,  /* +1 because we already counted the first day of the month */
+        format_date(NewDay, PrevMonth, NewDate)
     ).
+
 
 
 % Formatted Output
