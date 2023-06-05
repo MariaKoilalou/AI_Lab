@@ -31,7 +31,6 @@ add_date(Date, DaysToAdd) :-
         ;   NextMonth is Month + 1
         ),
         format_date(1, NextMonth),
-        add_date("0106", RemainingDays)
     ).
 
 % Subtract days
