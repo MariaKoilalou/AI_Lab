@@ -1,6 +1,3 @@
-% Create an object for every month
-days_in_month(01, 31).
-days_in_month(02, 28).
 days_in_month(03, 31).
 days_in_month(04, 30).
 days_in_month(05, 31).
@@ -31,6 +28,7 @@ add_date(Date, DaysToAdd) :-
         ;   NextMonth is Month + 1
         ),
         format_date(1, NextMonth),
+        add_date(NextDay || NextMonth, RemainingDays)
     ).
 
 % Subtract days
